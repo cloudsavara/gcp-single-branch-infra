@@ -7,7 +7,7 @@ mv vault /usr/bin
 mkdir /etc/vault
 useradd -r vault
 chown -R vault:vault /opt/vault
-HOST=`curl http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip`
+HOST=`curl -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip`
 IP4=`hostname -i`
 #Consul installation
 yum install -y yum-utils
