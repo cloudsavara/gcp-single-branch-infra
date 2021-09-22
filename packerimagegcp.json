@@ -1,0 +1,39 @@
+{
+    "variables": {
+         "service_account_json": "C:\\Users\\nkolli\\Downloads\\lyrical-bolt-318719-28361c80aa10.json",
+         "project_id": "lyrical-bolt-318719",
+		 "source_image_family": "centos-7"
+     },
+"builders": [ 
+        {
+           "type": "googlecompute",
+           "project_id": "{{user `project_id`}}",
+           "machine_type": "n1-standard-1",
+           "region": "us-west1",
+           "zone": "us-west1-b",
+           "image_description": "Packer image build",
+           "image_name": "mysbpimage",
+           "disk_size": 20,
+           "account_file": "{{ user `service_account_json`}}",
+		   "disk_type": "pd-ssd",
+		   "ssh_username": "packer",
+		   "source_image_family": "{{ user `source_image_family`}}"
+        }
+     ],
+"provisioners": [
+              {
+            "type": "shell",
+            "inline": [
+                "sleep 60",
+				"echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo",
+				"sudo yum install yum-utils -y",
+                "sudo yum-config-manager --add-repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo",
+                "sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key",
+				"sudo yum update -y",
+                "sudo yum install -y jenkins-2.263.4 wget",
+                "sudo yum install ansible -y"
+            ]
+        }
+
+      ]
+}
