@@ -61,16 +61,16 @@
     - name: Download jq binary
       get_url:
         url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
-        dest: /home/azureuser
+        dest: /opt/jq-linux64
     - name: Move the Binary
       command: '{{ item }}'
       loop:
-        - mv /home/azureuser/jq-linux64 /usr/bin/jq
+        - mv /opt/jq-linux64 /usr/bin/jq
         - chmod +x /usr/bin/jq
     - name: Download SonarQube docker-compose.yml
       get_url:
         url: https://raw.githubusercontent.com/kodekolli/eks-demo-project/main/docker-compose.yml
-        dest: /home/azureuser
+        dest: /opt/docker-compose.yml
     - name: Map count update
       shell: |
         echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
@@ -79,7 +79,7 @@
       loop:        
         - sysctl -p
         - sysctl -w fs.file-max=65536
-        - docker-compose -f /home/azureuser/docker-compose.yml up -d
+        - docker-compose -f /opt/docker-compose.yml up -d
         - sleep 10
         - chmod -R 777 /data
         - pip3 install openshift
