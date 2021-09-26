@@ -1,5 +1,6 @@
 provider "google" {
   credentials = file("/var/lib/jenkins/credentials.json")
+  project = var.project
 }
 
 # VPC
