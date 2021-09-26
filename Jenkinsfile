@@ -26,7 +26,7 @@ pipeline {
                     sh 'cat mycreds.json | jq -r .data.data > credentials.json'
                     sh 'cat mycreds.json | jq -r .data.data.sonar_token > sonar_token.txt'
 		    sh 'cat mycreds.json | jq -r .data.data.project_id > project_id.txt'
-		    GOOGLE_APPLICATION_CREDENTIALS = '/var/lib/jenkins/credentials.json'
+		    GOOGLE_APPLICATION_CREDENTIALS = "/var/lib/jenkins/workspace/$JOB_NAME/credentials.json"
                     SONAR_TOKEN = readFile('sonar_token.txt').trim()
 		    PROJECT_ID = readFile('project_id.txt').trim()
                 }
@@ -70,7 +70,7 @@ pipeline {
             steps {
                 script {
                     sh 'terraform init'
-                    sh "terraform plan -var project=${params.PROJECT_ID} -out ${plan}"
+			sh "terraform plan -var project=${PROJECT_ID} -out ${plan}"
                 }
             }
         }      
@@ -84,7 +84,7 @@ pipeline {
                         sh 'mkdir -p $HOME/.kube'
                     }
                     echo 'Running Terraform apply'
-                    sh "terraform apply -var project=${params.PROJECT_ID} --auto-approve"
+                    sh "terraform apply -var project=${PROJECT_ID} --auto-approve"
                     sh 'sudo chown $(id -u):$(id -g) $HOME/.kube/config'
 		    sh 'sudo cp kubeconfig $HOME/.kube'
                     sh 'sudo mkdir -p /root/.kube'
@@ -156,7 +156,7 @@ pipeline {
                         sh 'kubectl delete ns prometheus || true'
                         sh 'ansible-playbook python-app.yml --user jenkins -e action=absent -e config=$HOME/.kube/config || true'
                     }
-                        sh "terraform destroy -var project=${params.PROJECT_ID} --auto-approve"
+                        sh "terraform destroy -var project=${PROJECT_ID} --auto-approve"
                     
                 }
             }
