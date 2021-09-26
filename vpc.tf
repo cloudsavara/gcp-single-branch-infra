@@ -1,5 +1,5 @@
 provider "google" {
-  credentials = "${file("C:\\Users\\nkolli\\Documents\\Terraform\\GCP\\credentials.json")}"
+  credentials = "${file("/var/lib/jenkins/credentials.json")}"
 }
 
 # VPC
