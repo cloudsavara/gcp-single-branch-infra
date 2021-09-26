@@ -1,5 +1,5 @@
 provider "google" {
-  credentials = "${file("/var/lib/jenkins/credentials.json")}"
+  credentials = file("/var/lib/jenkins/credentials.json")
 }
 
 # VPC
