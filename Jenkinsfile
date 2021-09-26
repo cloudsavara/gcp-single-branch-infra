@@ -18,7 +18,7 @@ pipeline {
         stage('Retrieve GCP creds and Docker creds from vault'){
             steps {
                 script {
-                    def host=sh(script: 'curl ifconfig.me', returnStdout: true)
+                    def host=sh(script: 'curl -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip', returnStdout: true)
                     echo "$host"
                     sh "export VAULT_ADDR=http://${host}:8200"
                     sh 'export VAULT_SKIP_VERIFY=true'
