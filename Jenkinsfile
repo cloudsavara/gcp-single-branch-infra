@@ -89,7 +89,7 @@ pipeline {
                     sh 'sudo chown $(id -u):$(id -g) /var/lib/jenkins/workspace/$JOB_NAME/kubeconfig'
 		    sh 'sudo cp kubeconfig /var/lib/jenkins/.kube'
                     sh 'sudo mkdir -p /root/.kube'
-                    sh 'sudo cp /var/lib/jenkins/.kube/config /root/.kube'
+                    sh 'sudo cp /var/lib/jenkins/.kube/kubeconfig /root/.kube'
                     sleep 30
                     sh 'kubectl get nodes'
                 }
