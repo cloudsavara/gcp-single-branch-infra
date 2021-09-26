@@ -17,7 +17,7 @@ variable "gke_num_nodes" {
 resource "google_container_cluster" "primary" {
   name     = "tf-gke"
   location = "us-west1"
-  project                 = "lyrical-bolt-318719"
+  project  = var.PROJECT_ID
   
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -35,7 +35,7 @@ resource "google_container_node_pool" "primary_nodes" {
   location   = "us-west1"
   cluster    = google_container_cluster.primary.name
   node_count = 2
-  project                 = "lyrical-bolt-318719"
+  project   = var.PROJECT_ID
 
   node_config {
     oauth_scopes = [
@@ -58,7 +58,7 @@ resource "google_container_node_pool" "primary_nodes" {
 
 module "gke_auth" {
   source = "terraform-google-modules/kubernetes-engine/google//modules/auth"
-  project_id   = "lyrical-bolt-318719"
+  project_id   = var.PROJECT_ID
   location     = "us-west1"
   cluster_name = "tf-gke"
 }
