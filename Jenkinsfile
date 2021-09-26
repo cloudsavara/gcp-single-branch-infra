@@ -27,7 +27,7 @@ pipeline {
                     sh 'cat mycreds.json | jq -r .data.data.sonar_token > sonar_token.txt'
 		    sh 'cat mycreds.json | jq -r .data.data.project_id > project_id.txt'
 		    GOOGLE_APPLICATION_CREDENTIALS = "/var/lib/jenkins/workspace/$JOB_NAME/credentials.json"
-		    sh 'cp /var/lib/jenkins/workspace/$JOB_NAME/credentials.json /var/lib/jenkinscredentials.json'
+		    sh 'cp /var/lib/jenkins/workspace/$JOB_NAME/credentials.json /var/lib/jenkins/credentials.json'
                     SONAR_TOKEN = readFile('sonar_token.txt').trim()
 		    PROJECT_ID = readFile('project_id.txt').trim()
                 }
