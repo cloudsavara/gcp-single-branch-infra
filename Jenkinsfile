@@ -86,7 +86,7 @@ pipeline {
                     }
                     echo 'Running Terraform apply'
                     sh "terraform apply -var project=${PROJECT_ID} --auto-approve"
-                    sh 'sudo chown $(id -u):$(id -g) $HOME/.kube/config'
+                    sh 'sudo chown $(id -u):$(id -g) /var/lib/jenkins/workspace/$JOB_NAME/kubeconfig'
 		    sh 'sudo cp kubeconfig $HOME/.kube'
                     sh 'sudo mkdir -p /root/.kube'
                     sh 'sudo cp $HOME/.kube/config /root/.kube'
