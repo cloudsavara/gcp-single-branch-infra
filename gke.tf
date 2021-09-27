@@ -62,9 +62,9 @@ module "gke_auth" {
   location     = "us-west1"
   cluster_name = "tf-gke"
 }
-resource "local_file" "config" {
+resource "local_file" "kubeconfig" {
   content  = module.gke_auth.kubeconfig_raw
-  filename = "kubeconfig"
+  filename = "config"
 }
 
 
