@@ -34,7 +34,7 @@
         kubeconfig: /var/lib/jenkins/.kube/config
         values:
           persistence:
-            storageClassName: "default"
+            storageClassName: "standard"
 
     - name: Deploy latest version of Grafana chart inside monitoring namespace with values
       kubernetes.core.helm:
@@ -47,7 +47,7 @@
           replicas: 2
           adminPassword: 'welcome'
           persistence:
-            storageClassName: "default"
+            storageClassName: "standard"
             enabled: true
           service:
             type: "LoadBalancer"
