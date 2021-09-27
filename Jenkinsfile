@@ -116,7 +116,7 @@ pipeline {
                     dir('python-jinja2-login'){
                         def host=sh(script: 'curl ifconfig.me', returnStdout: true)
                         echo "$host"
-                        git url:"https://github.com/${params.git_user}/python-jinja2-login.git", branch:'master'
+                        git url:"https://github.com/${params.git_user}/python-jinja2-login.git", branch:'gke'
                         sh "/opt/sonarscanner/bin/sonar-scanner \
                         -Dsonar.projectKey=python-login \
                         -Dsonar.projectBaseDir=/var/lib/jenkins/workspace/$JOB_NAME/python-jinja2-login \
@@ -134,7 +134,7 @@ pipeline {
                 script{
                     dir('python-jinja2-login'){
                         echo "Building docker image"
-                        dockerImage = docker.build("${USER_CREDENTIALS_USR}/azure-single-branch-infra:${env.BUILD_ID}")
+                        dockerImage = docker.build("${USER_CREDENTIALS_USR}/gke-single-branch-infra:${env.BUILD_ID}")
                         echo "Pushing the image to registry"
                         docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
                             dockerImage.push("latest")
