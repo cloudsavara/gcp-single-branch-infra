@@ -114,7 +114,7 @@ pipeline {
             steps {
                 script {
                     dir('python-jinja2-login'){
-                        def host=sh(script: 'curl ifconfig.me', returnStdout: true)
+                        def host=sh(script: 'curl -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip', returnStdout: true)
                         echo "$host"
                         git url:"https://github.com/${params.git_user}/python-jinja2-login.git", branch:'gke'
                         sh "/opt/sonarscanner/bin/sonar-scanner \
