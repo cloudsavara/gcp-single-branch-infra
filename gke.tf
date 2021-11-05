@@ -15,7 +15,7 @@ variable "gke_num_nodes" {
 
 # GKE cluster
 resource "google_container_cluster" "primary" {
-  name     = "tf-gke"
+  name     = var.cluster_name
   location = "us-west1"
   project  = var.project
   
@@ -66,6 +66,3 @@ resource "local_file" "kubeconfig" {
   content  = module.gke_auth.kubeconfig_raw
   filename = "config"
 }
-
-
-
