@@ -71,7 +71,7 @@ pipeline {
             steps {
                 script {
                     sh 'terraform init'
-			sh "terraform plan -var project=${PROJECT_ID} -out ${plan}"
+			sh "terraform plan -var project=${PROJECT_ID} -var cluster-name=${params.cluster_name} -out ${plan}"
                 }
             }
         }      
@@ -85,7 +85,7 @@ pipeline {
                         sh 'mkdir -p $HOME/.kube'
                     }
                     echo 'Running Terraform apply'
-                    sh "terraform apply -var project=${PROJECT_ID} --auto-approve"
+                    sh "terraform apply -var project=${PROJECT_ID} -var cluster-name=${params.cluster_name} --auto-approve"
                     sh 'sudo chown $(id -u):$(id -g) /var/lib/jenkins/workspace/$JOB_NAME/config'
 		    sh 'sudo cp config /var/lib/jenkins/.kube'
                     sh 'sudo mkdir -p /root/.kube'
