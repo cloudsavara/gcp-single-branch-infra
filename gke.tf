@@ -60,7 +60,7 @@ module "gke_auth" {
   source = "terraform-google-modules/kubernetes-engine/google//modules/auth"
   project_id   = var.project
   location     = "us-west1"
-  cluster_name = "tf-gke"
+  cluster_name = google_container_cluster.primary.name
 }
 resource "local_file" "kubeconfig" {
   content  = module.gke_auth.kubeconfig_raw
