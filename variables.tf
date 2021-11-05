@@ -1,4 +1,4 @@
 variable "project" {}
-variable "cluster-name" {
+variable "cluster_name" {
   default = "tf-gke"
 }
