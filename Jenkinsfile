@@ -45,6 +45,7 @@ pipeline {
                     currentBuild.displayName = "#" + env.BUILD_ID + " " + params.action + " gke-" + params.cluster_name
                     plan = params.cluster_name + '.plan'
                     TF_VERSION = params.terraform_version
+                    CLUSTER_NAME = params.cluster_name
                 }
             }
         }
@@ -86,10 +87,10 @@ pipeline {
                     }
                     echo 'Running Terraform apply'
                     sh "terraform apply -var project=${PROJECT_ID} -var cluster_name=${params.cluster_name} --auto-approve"
-                    sh 'sudo chown $(id -u):$(id -g) /var/lib/jenkins/workspace/$JOB_NAME/config'
-		    sh 'sudo cp config /var/lib/jenkins/.kube'
-                    sh 'sudo mkdir -p /root/.kube'
-                    sh 'sudo cp /var/lib/jenkins/.kube/config /root/.kube'
+                    sh "sudo gcloud container clusters get-credentials ${params.cluster_name} --region us-west1"
+                    sh 'sudo cp /root/.kube/config /var/lib/jenkins/.kube/config'
+                    sh 'sudo cp -r /root/.config /var/lib/jenkins/'
+                    sh 'sudo chown -R $(id -u):$(id -g) /var/lib/jenkins/.config/gcloud'
                     sleep 30
                     sh 'kubectl get nodes'
                 }
@@ -101,7 +102,7 @@ pipeline {
                 script {
                     echo 'Deploying promethus and grafana using Ansible playbooks and Helm chars'
                     sh 'ansible-galaxy collection install -r requirements.yml'
-                    sh 'ansible-playbook helm.yml --user jenkins'
+                    sh 'ansible-playbook helm.yml --user jenkins -e config=/root/.kube/config'
                     sh 'sleep 20'
                     sh 'kubectl get all -n grafana'
                     sh 'kubectl get all -n prometheus'
@@ -141,7 +142,7 @@ pipeline {
                             dockerImage.push("${env.BUILD_ID}")
                         }
                         echo "Deploy app to EKS cluster"
-                        sh 'ansible-playbook python-app.yml --user jenkins -e action=present -e config=$HOME/.kube/config'
+                        sh 'sudo ansible-playbook python-app.yml --user jenkins -e action=present -e config=/root/.kube/config'
                         sleep 10
                         sh 'export APPELB=$(kubectl get svc -n default helloapp-svc -o jsonpath="{.status.loadBalancer.ingress[0].hostname}")'
                     }
@@ -155,7 +156,7 @@ pipeline {
                     dir('python-jinja2-login'){
                         sh 'kubectl delete ns grafana || true'
                         sh 'kubectl delete ns prometheus || true'
-                        sh 'ansible-playbook python-app.yml --user jenkins -e action=absent -e config=$HOME/.kube/config || true'
+                        sh 'ansible-playbook python-app.yml --user jenkins -e action=absent -e config=/root/.kube/config || true'
                     }
                         sh "terraform destroy -var project=${PROJECT_ID} --auto-approve"
                     
